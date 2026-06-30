@@ -1,0 +1,30 @@
+{
+    "name": "baileys-base",
+    "version": "1.0.0",
+    "description": "Simple WhatsApp Bot Base using Baileys",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "start": "node .",
+        "dev": "nodemon ."
+    },
+    "keywords": [
+        "baileys",
+        "whatsapp",
+        "bot",
+        "base"
+    ],
+    "author": "rtwone",
+    "license": "MIT",
+    "dependencies": {
+        "@google/genai": "^2.10.0",
+        "@whiskeysockets/baileys": "^6.7.18",
+        "chalk": "^5.3.0",
+        "dotenv": "^16.5.0",
+        "pino": "^9.7.0",
+        "qrcode-terminal": "^0.12.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
+}
