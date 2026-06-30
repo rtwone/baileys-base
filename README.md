@@ -127,22 +127,8 @@ npm start
 Buat file `.env` di root directory:
 
 ```env
-# Application
-NODE_ENV=development
-PORT=3000
-
-# WhatsApp Bot
-PREFIX=!
-SESSION_PATH=./auth
-SESSION_NAME=baileys
-
 # AI (optional)
 GEMINI_API_KEY=your_api_key_here
-GEMINI_MODEL=gemini-1.5-flash
-
-# Database (optional)
-DB_TYPE=file
-DB_PATH=./database
 ```
 
 > ⚠️ **Important**: Jangan commit `.env` ke git — file ini berisi secrets!
