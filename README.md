@@ -1,177 +1,401 @@
-# ⚡ Baileys Base — Profesional WhatsApp Bot Starter
+# ⚡ Baileys Base
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rtwone/baileys-base/main/assets/banner.png" alt="Baileys Base" width="100%"/>
-</p>
+<div align="center">
 
-Baileys Base adalah starter kit ringan dan modular untuk membangun WhatsApp bot berbasis library Baileys. Dirancang untuk pengembangan cepat, struktur yang bersih, dan perluasan berbasis plugin sehingga Anda bisa fokus pada logika fitur tanpa mengulang boilerplate koneksi dan pengelolaan session.
+**Profesional WhatsApp Bot Starter Kit**
 
-- Bahasa utama: JavaScript (Node.js 18+)
-- Tujuan: cepat membangun bot WA yang dapat diperluas, diuji, dan dijalankan di produksi
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js)](https://nodejs.org/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-100%25-f7df1e?logo=javascript)](https://www.javascript.com/)
+[![Baileys](https://img.shields.io/badge/Baileys-WhatsApp%20API-25D366?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
 
----
+[🚀 Mulai Cepat](#-quickstart) • [📚 Dokumentasi](#-dokumentasi) • [🎯 Fitur](#-fitur) • [🤝 Kontribusi](#-kontribusi)
 
-## Ringkasan fitur
-- Koneksi Baileys yang stabil dan manajemen session otomatis
-- Sistem perintah (commands) modular — tambahkan file per perintah
-- Modul chat/handler terpisah untuk pipeline pesan (mis. AI responder)
-- Utility umum di library (lib/) untuk pengiriman pesan, serialisasi, logging, dan helper
-- Template untuk integrasi AI (contoh: modul gemini.js)
+</div>
 
 ---
 
-## Stack
-- Language(s): JavaScript (Node.js 18+)
-- Runtime: Node.js
-- Notable libraries: Baileys (WhatsApp Web), plus util internal untuk sendMessage / serialize / database / gemini
+## 🎯 Fitur
+
+✨ **Lightweight & Modular** — Struktur bersih, mudah diperluas  
+🔌 **Plugin System** — Tambah command dan handler kapan saja  
+🤖 **AI Integration** — Built-in support untuk Google Gemini  
+📦 **Production Ready** — Session management & error handling otomatis  
+🛠️ **Developer Friendly** — TypeScript-ready, hot reload support  
+⚙️ **Configurable** — Environment-based configuration  
 
 ---
 
-## Struktur repo (top-level)
-```text
-.env                  # environment sample (sensitive values kept local)
-config.js             # konfigurasi global
-index.js              # entrypoint aplikasi (koneksi + bootstrap)
-package.json          # dependensi & scripts
-commands/             # perintah bot (plugins/commands)
-  ├─ ping.js
-  └─ menu.js
-chats/                # pipeline chat handlers (contoh: AI responder)
-  └─ ai.js
-lib/                  # helper & utilities (sendMessage, serialize, db, logger, gemini, dll)
-  ├─ Collection.js
-  ├─ database.js
-  ├─ functions.js
-  ├─ gemini.js
-  ├─ logger.js
-  ├─ sendMessage.js
-  └─ serialize.js
-prompts/              # prompt templates (mis. chatbot.txt)
-database/             # tempat file/adapter database (lokal/opsional)
-events/               # event hooks
-handlers/             # handler utilities / glue code
+## 📋 Tech Stack
+
+| Teknologi | Versi | Tujuan |
+|-----------|-------|--------|
+| **Node.js** | 18+ | Runtime |
+| **Baileys** | Latest | WhatsApp Web API |
+| **JavaScript** | ES2020+ | Language |
+| **Google Gemini** | Optional | AI Responses |
+
+---
+
+## 📂 Struktur Proyek
+
+```
+baileys-base/
+├── 📄 index.js              # Entry point aplikasi
+├── 📄 config.js             # Konfigurasi global
+├── 📄 package.json          # Dependencies
+├── 📁 commands/             # 🔌 Command plugins
+│   ├── ping.js
+│   └── menu.js
+├── 📁 chats/                # 💬 Chat handlers & pipeline
+│   └── ai.js
+├── 📁 lib/                  # 🛠️ Utilities & helpers
+│   ├── Collection.js
+│   ├── database.js
+│   ├── functions.js
+│   ├── gemini.js
+│   ├── logger.js
+│   ├── sendMessage.js
+│   └── serialize.js
+├── 📁 prompts/              # 📝 AI prompt templates
+├── 📁 database/             # 💾 Data storage
+├── 📁 events/               # 🎪 Event hooks
+├── 📁 handlers/             # 🔄 Handler utilities
+└── 📄 .env                  # Environment variables (git ignored)
 ```
 
-How it fits together:
+### 🔄 Alur Kerja
 
-- index.js bootstrap aplikasi dan membuka koneksi ke WhatsApp via Baileys.
-- Saat pesan masuk, file di lib/ men-serialize payload, lalu dispatcher memanggil perintah dari commands/ atau handler di chats/ sesuai prioritas.
-- Modul lib/sendMessage.js dan lib/serialize.js menyediakan API konsisten untuk mengirim dan memformat pesan.
-- Integrasi AI (jika dikonfigurasi) di lib/gemini.js digunakan oleh handler AI di chats/ai.js.
+```
+Pesan Masuk
+    ↓
+lib/serialize.js (normalize payload)
+    ↓
+Command dispatcher (cek prefix & command)
+    ↓
+commands/ atau chats/ (execute handler)
+    ↓
+lib/sendMessage.js (kirim response)
+    ↓
+Pesan Keluar
+```
 
 ---
 
-## Quickstart — dari clone ke jalan
-Prerequisites:
+## 🚀 Quickstart
 
-- Node.js 18+ (versi LTS direkomendasikan)
-- Git
+### Prerequisites
 
-Langkah singkat:
+- **Node.js** 18+ (LTS recommended)
+- **Git** untuk clone repo
+- **Koneksi Internet** stabil
+
+### Setup (5 menit)
 
 ```bash
+# 1️⃣ Clone repository
 git clone https://github.com/rtwone/baileys-base.git
 cd baileys-base
+
+# 2️⃣ Install dependencies
 npm install
+
+# 3️⃣ Setup environment
+cp .env.example .env
+# Edit .env sesuai kebutuhan (lihat section berikutnya)
+
+# 4️⃣ Jalankan
+npm run dev
 ```
 
-Menjalankan:
+### Jalankan Aplikasi
 
-### Development
+**Development Mode** (dengan auto-reload):
 ```bash
 npm run dev
 ```
 
-### Production
+**Production Mode**:
 ```bash
 npm start
 ```
 
-Catatan: perintah di atas mengasumsikan skrip tersedia di package.json (cek dan sesuaikan bila perlu).
-
 ---
 
-## Konfigurasi environment
-Buat file `.env` di root (jangan commit nilai sensitif). Contoh variabel yang umum dipakai:
+## ⚙️ Konfigurasi Environment
+
+Buat file `.env` di root directory:
 
 ```env
-# Contoh (isi sesuai kebutuhan)
+# Application
 NODE_ENV=development
 PORT=3000
-PREFIX=!               # prefix perintah (opsional)
-GEMINI_API_KEY=your_api_key_here   # jika menggunakan modul gemini
-SESSION_PATH=./auth    # tempat menyimpan session (pastikan folder ada)
+
+# WhatsApp Bot
+PREFIX=!
+SESSION_PATH=./auth
+SESSION_NAME=baileys
+
+# AI (optional)
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-1.5-flash
+
+# Database (optional)
+DB_TYPE=file
+DB_PATH=./database
 ```
-Pastikan folder untuk session/auth tersedia dan dapat ditulis oleh proses Node.
+
+> ⚠️ **Important**: Jangan commit `.env` ke git — file ini berisi secrets!
 
 ---
 
-## Menambah Perintah (Commands)
-Perintah sederhana ditempatkan di folder `commands/` sebagai file modul ES:
+## 🔌 Membuat Command Baru
+
+Commands disimpan di folder `commands/`. Buat file baru dengan struktur:
 
 ```javascript
-// commands/ping.js
+// commands/hello.js
 export default {
-  name: "ping",
-  aliases: ["p"],
-  category: "main",
-  cooldown: 3,
-  async execute({ m, sock }) {
-    return m.reply("Pong!")
+  name: "hello",
+  aliases: ["hi", "hey"],
+  category: "fun",
+  cooldown: 5,
+  description: "Ucapkan hello ke bot",
+  
+  async execute({ m, sock, args, prefix }) {
+    const text = args.join(" ") || "World";
+    return m.reply(`Hello ${text}! 👋`);
   }
 }
 ```
-- Fields umum: name, aliases, category, cooldown, execute
-- execute menerima konteks pesan (mis. `m`) dan instance koneksi (`sock`)
+
+**Opsi tersedia:**
+- `name` (required) — Nama command
+- `aliases` — Alias command lainnya
+- `category` — Kategori command
+- `cooldown` — Delay antar eksekusi (dalam detik)
+- `description` — Deskripsi singkat
+- `execute` — Fungsi handler
 
 ---
 
-## Handler Chat & AI
-Folder `chats/` berisi handler pipeline, contoh `ai.js` memanggil fungsi helper `askGemini` dari `lib/gemini.js`. Gunakan `m.stop()` pada handler untuk menghentikan pipeline jika pesan sudah ditangani.
+## 💬 Chat Handlers & AI
+
+Handlers di `chats/` dijalankan untuk semua pesan sebelum command dispatcher:
+
+```javascript
+// chats/ai.js
+import { askGemini } from "../lib/gemini.js";
+
+export async function chatHandler(m, sock) {
+  // Cek apakah ada prefix (jika ada, skip handler ini)
+  if (m.text?.startsWith(m.prefix)) return;
+
+  // Respons dengan AI jika diaktifkan
+  const response = await askGemini(m.text);
+  return m.reply(response);
+}
+```
+
+Gunakan `m.stop()` untuk menghentikan pipeline.
 
 ---
 
-## Utilities & Helpers
-- lib/functions.js — helper utilitas (format waktu, fetch, file JSON, dll.)
-- lib/sendMessage.js — adapter pengiriman pesan agar code perintah konsisten
-- lib/serialize.js — normalisasi pesan masuk agar mudah diproses per-command
-- lib/database.js — adapter penyimpanan sederhana (file-based/opsional)
+## 🛠️ Built-in Utilities
+
+### `lib/sendMessage.js`
+Wrapper untuk mengirim pesan dengan berbagai tipe:
+```javascript
+m.reply(text)          // Reply text
+m.send(text)           // Send message
+m.react(emoji)         // React dengan emoji
+m.edit(newText)        // Edit pesan
+m.delete()             // Delete pesan
+```
+
+### `lib/serialize.js`
+Normalisasi pesan masuk:
+```javascript
+m.text              // Teks pesan
+m.sender            // ID pengirim
+m.isGroup           // Apakah group chat
+m.prefix            // Bot prefix
+m.command           // Command yang digunakan
+m.args              // Argumen command
+m.quoted            // Pesan yang di-reply
+```
+
+### `lib/functions.js`
+Helper utilities:
+- `formatDate()` — Format tanggal
+- `formatTime()` — Format waktu
+- `delay()` — Sleep/delay
+- `fetch()` — HTTP requests
+- `randomChoice()` — Pilih random dari array
+
+### `lib/database.js`
+Penyimpanan data sederhana (file-based):
+```javascript
+db.set(key, value)
+db.get(key)
+db.delete(key)
+db.all()
+```
 
 ---
 
-## Logging & Debugging
-- lib/logger.js menangani format dan level log.
-- Untuk debugging, jalankan dengan NODE_ENV=development dan periksa output terminal untuk QR code saat pertama kali koneksi.
+## 🤖 Integrasi AI (Google Gemini)
+
+### Setup
+
+1. Dapatkan API key dari [Google AI Studio](https://aistudio.google.com/apikey)
+2. Masukkan ke `.env`:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+3. Gunakan di handler:
+```javascript
+import { askGemini } from "./lib/gemini.js";
+
+const response = await askGemini("Your question here");
+m.reply(response);
+```
 
 ---
 
-## Deployment & Produksi
-- Jalankan di proses manager (pm2/systemd) untuk memastikan otomatis restart.
-- Pastikan session disimpan di lokasi yang persisten (bukan ephemeral container storage) jika ingin mempertahankan login.
-- Backup session/auth file secara aman.
+## 📊 Logging & Debugging
+
+Logger tersedia di `lib/logger.js`:
+
+```javascript
+import logger from "./lib/logger.js";
+
+logger.info("Bot started");
+logger.warn("Low storage");
+logger.error("Connection failed");
+logger.debug("Payload:", payload);
+```
+
+**Tips debugging:**
+- Jalankan dengan `NODE_ENV=development` untuk verbose logging
+- Cek QR code di terminal saat pertama kali koneksi
+- Monitor session file di folder `./auth`
 
 ---
 
-## Keamanan & Kebijakan penggunaan
-- Proyek ini menggunakan WhatsApp Web API via Baileys — tidak ada afiliasi resmi dengan WhatsApp/Meta.
-- Gunakan bot sesuai kebijakan WhatsApp dan hukum setempat. Hindari spam dan penggunaan otomatis yang melanggar ketentuan layanan.
+## 🌐 Deployment
+
+### Menggunakan PM2 (Recommended)
+
+```bash
+# Install PM2 globally
+npm install -g pm2
+
+# Start aplikasi
+pm2 start index.js --name "baileys-bot"
+
+# Setup auto-restart
+pm2 startup
+pm2 save
+
+# Monitor
+pm2 monit
+```
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Best Practices
+
+✅ Simpan session di lokasi persistent  
+✅ Backup auth folder secara berkala  
+✅ Monitor resource usage  
+✅ Setup proper error handling & logging  
+✅ Gunakan environment variables untuk secrets  
 
 ---
 
-## Kontribusi
-1. Fork repo
-2. Buat branch fitur: git checkout -b feat/namafitur
-3. Tambah test / dokumentasi bila relevan
-4. Buka Pull Request dengan deskripsi perubahan
+## 🔒 Keamanan & Disclaimer
 
-Silakan buka issue untuk diskusi fitur atau bug sebelum implementasi besar.
+⚠️ **Important:**
 
----
-
-## Lisensi
-MIT © rtwone
+- Proyek ini **tidak berafiliasi** dengan WhatsApp/Meta
+- Penggunaan bot harus sesuai dengan [WhatsApp Terms of Service](https://www.whatsapp.com/legal)
+- **Jangan** gunakan untuk spam atau aktivitas ilegal
+- Tanggung jawab penggunaan ada di tangan Anda
+- Selalu backup session file Anda
 
 ---
 
-## Kontak
-Author: rtwone — https://github.com/rtwone
+## 🤝 Kontribusi
+
+Kami menerima kontribusi! Berikut cara berkontribusi:
+
+1. **Fork** repository ini
+2. **Buat branch** fitur: `git checkout -b feat/amazing-feature`
+3. **Commit** perubahan: `git commit -m 'Add amazing feature'`
+4. **Push** ke branch: `git push origin feat/amazing-feature`
+5. **Buka Pull Request** dengan deskripsi detail
+
+### Guidelines
+
+- Follow code style yang ada
+- Tambahkan comments untuk kode kompleks
+- Test di development sebelum push
+- Update dokumentasi jika diperlukan
+
+---
+
+## 📖 Dokumentasi Lengkap
+
+| Topik | Link |
+|-------|------|
+| Command API | [commands/](./commands/) |
+| Chat Handlers | [chats/](./chats/) |
+| Utilities | [lib/](./lib/) |
+| Examples | [examples/](./examples/) |
+
+---
+
+## 📝 Lisensi
+
+```
+MIT License © 2026 rtwone
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction...
+```
+
+Lihat file [LICENSE](./LICENSE) untuk detail lengkap.
+
+---
+
+## 💬 Hubungi Kami
+
+| Platform | Link |
+|----------|------|
+| **GitHub** | [@rtwone](https://github.com/rtwone) |
+| **Issues** | [Buka Issue](https://github.com/rtwone/baileys-base/issues) |
+| **Discussions** | [Mulai Diskusi](https://github.com/rtwone/baileys-base/discussions) |
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [rtwone](https://github.com/rtwone)**
+
+Jika proyek ini membantu Anda, jangan lupa ⭐ star repository ini!
+
+</div>
