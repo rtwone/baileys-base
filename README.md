@@ -364,7 +364,6 @@ Kami menerima kontribusi! Berikut cara berkontribusi:
 | Command API | [commands/](./commands/) |
 | Chat Handlers | [chats/](./chats/) |
 | Utilities | [lib/](./lib/) |
-| Examples | [examples/](./examples/) |
 
 ---
 
@@ -389,6 +388,7 @@ Lihat file [LICENSE](./LICENSE) untuk detail lengkap.
 | **GitHub** | [@rtwone](https://github.com/rtwone) |
 | **Issues** | [Buka Issue](https://github.com/rtwone/baileys-base/issues) |
 | **Discussions** | [Mulai Diskusi](https://github.com/rtwone/baileys-base/discussions) |
+| **Instagram** | [@irfvnny](https://instagram.com/irfvnny) |
 
 ---
 
