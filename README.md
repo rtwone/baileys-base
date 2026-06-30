@@ -148,7 +148,7 @@ export default {
   cooldown: 5,
   description: "Ucapkan hello ke bot",
   
-  async execute({ m, sock, args, prefix }) {
+  async execute({ m, sock }) {
     const text = args.join(" ") || "World";
     return m.reply(`Hello ${text}! 👋`);
   }
