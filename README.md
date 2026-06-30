@@ -1,55 +1,73 @@
-# ⚡ Baileys Base
+# ⚡ Baileys Base — Profesional WhatsApp Bot Starter
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rtwone/baileys-base/main/assets/banner.png" width="100%" />
+  <img src="https://raw.githubusercontent.com/rtwone/baileys-base/main/assets/banner.png" alt="Baileys Base" width="100%"/>
 </p>
 
-<p align="center">
-  <b>Lightweight WhatsApp Bot Base using Baileys</b><br/>
-  Build fast. Scale easy. Customize freely.
-</p>
+Baileys Base adalah starter kit ringan dan modular untuk membangun WhatsApp bot berbasis library Baileys. Dirancang untuk pengembangan cepat, struktur yang bersih, dan perluasan berbasis plugin sehingga Anda bisa fokus pada logika fitur tanpa mengulang boilerplate koneksi dan pengelolaan session.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node.js-18%2B-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Baileys-WA%20API-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
-</p>
+- Bahasa utama: JavaScript (Node.js 18+)
+- Tujuan: cepat membangun bot WA yang dapat diperluas, diuji, dan dijalankan di produksi
 
 ---
 
-## ✨ What is this?
-
-**Baileys Base** is a clean starter template for building WhatsApp bots using the Baileys WebSocket library.
-
-Built for:
-- ⚡ Fast development
-- 🧠 Clean architecture
-- 🔥 Easy scaling
-- 🧩 Plugin-based features
+## Ringkasan fitur
+- Koneksi Baileys yang stabil dan manajemen session otomatis
+- Sistem perintah (commands) modular — tambahkan file per perintah
+- Modul chat/handler terpisah untuk pipeline pesan (mis. AI responder)
+- Utility umum di library (lib/) untuk pengiriman pesan, serialisasi, logging, dan helper
+- Template untuk integrasi AI (contoh: modul gemini.js)
 
 ---
 
-## 🚀 Why use this?
-
-✔ No messy structure  
-✔ Ready-to-use command system  
-✔ Auto session management  
-✔ Easy to extend  
-✔ Production-ready base  
+## Stack
+- Language(s): JavaScript (Node.js 18+)
+- Runtime: Node.js
+- Notable libraries: Baileys (WhatsApp Web), plus util internal untuk sendMessage / serialize / database / gemini
 
 ---
 
-## 🧰 Tech Stack
+## Struktur repo (top-level)
+```text
+.env                  # environment sample (sensitive values kept local)
+config.js             # konfigurasi global
+index.js              # entrypoint aplikasi (koneksi + bootstrap)
+package.json          # dependensi & scripts
+commands/             # perintah bot (plugins/commands)
+  ├─ ping.js
+  └─ menu.js
+chats/                # pipeline chat handlers (contoh: AI responder)
+  └─ ai.js
+lib/                  # helper & utilities (sendMessage, serialize, db, logger, gemini, dll)
+  ├─ Collection.js
+  ├─ database.js
+  ├─ functions.js
+  ├─ gemini.js
+  ├─ logger.js
+  ├─ sendMessage.js
+  └─ serialize.js
+prompts/              # prompt templates (mis. chatbot.txt)
+database/             # tempat file/adapter database (lokal/opsional)
+events/               # event hooks
+handlers/             # handler utilities / glue code
+```
 
-- Node.js (18+)
-- Baileys WhatsApp Web API
-- JavaScript / TypeScript
-- Event-driven architecture
+How it fits together:
+
+- index.js bootstrap aplikasi dan membuka koneksi ke WhatsApp via Baileys.
+- Saat pesan masuk, file di lib/ men-serialize payload, lalu dispatcher memanggil perintah dari commands/ atau handler di chats/ sesuai prioritas.
+- Modul lib/sendMessage.js dan lib/serialize.js menyediakan API konsisten untuk mengirim dan memformat pesan.
+- Integrasi AI (jika dikonfigurasi) di lib/gemini.js digunakan oleh handler AI di chats/ai.js.
 
 ---
 
-## ⚙️ Installation
+## Quickstart — dari clone ke jalan
+Prerequisites:
+
+- Node.js 18+ (versi LTS direkomendasikan)
+- Git
+
+Langkah singkat:
 
 ```bash
 git clone https://github.com/rtwone/baileys-base.git
@@ -57,87 +75,103 @@ cd baileys-base
 npm install
 ```
 
----
+Menjalankan:
 
-## 🚀 Run Bot
-
-### Development Mode
+### Development
 ```bash
 npm run dev
 ```
 
-### Production Mode
+### Production
 ```bash
 npm start
 ```
 
----
-
-## 🔐 Login System
-
-1. **Run bot untuk pertama kali**
-2. **Scan QR Code di terminal**
-3. **Session otomatis tersimpan di folder `auth/`**
-4. **Tidak perlu login ulang selama session masih ada**
+Catatan: perintah di atas mengasumsikan skrip tersedia di package.json (cek dan sesuaikan bila perlu).
 
 ---
 
-## 🧩 Create New Command
+## Konfigurasi environment
+Buat file `.env` di root (jangan commit nilai sensitif). Contoh variabel yang umum dipakai:
 
-Tambahkan file di: `src/plugins/`
+```env
+# Contoh (isi sesuai kebutuhan)
+NODE_ENV=development
+PORT=3000
+PREFIX=!               # prefix perintah (opsional)
+GEMINI_API_KEY=your_api_key_here   # jika menggunakan modul gemini
+SESSION_PATH=./auth    # tempat menyimpan session (pastikan folder ada)
+```
+Pastikan folder untuk session/auth tersedia dan dapat ditulis oleh proses Node.
 
-### Example Command
+---
+
+## Menambah Perintah (Commands)
+Perintah sederhana ditempatkan di folder `commands/` sebagai file modul ES:
+
 ```javascript
+// commands/ping.js
 export default {
   name: "ping",
-  description: "Check bot response",
-
-  execute: async ({ sock, m }) => {
-    await sock.sendMessage(m.key.remoteJid!, {
-      text: "🏓 Pong!"
-    })
+  aliases: ["p"],
+  category: "main",
+  cooldown: 3,
+  async execute({ m, sock }) {
+    return m.reply("Pong!")
   }
 }
 ```
+- Fields umum: name, aliases, category, cooldown, execute
+- execute menerima konteks pesan (mis. `m`) dan instance koneksi (`sock`)
 
 ---
 
-## 💡 You Can Build
-
-- 🔥 Auto responder bot
-- 👥 Group management bot
-- 📥 Downloader bot (YouTube, TikTok, IG)
-- 🤖 AI chat bot
-- 🛒 Store / payment bot
-- ⏰ Reminder system
+## Handler Chat & AI
+Folder `chats/` berisi handler pipeline, contoh `ai.js` memanggil fungsi helper `askGemini` dari `lib/gemini.js`. Gunakan `m.stop()` pada handler untuk menghentikan pipeline jika pesan sudah ditangani.
 
 ---
 
-## ⚠️ Disclaimer
-
-This project uses WhatsApp Web API via Baileys.
-
-- Not affiliated with WhatsApp / Meta
-- Use at your own risk
-- Avoid spam or abuse
+## Utilities & Helpers
+- lib/functions.js — helper utilitas (format waktu, fetch, file JSON, dll.)
+- lib/sendMessage.js — adapter pengiriman pesan agar code perintah konsisten
+- lib/serialize.js — normalisasi pesan masuk agar mudah diproses per-command
+- lib/database.js — adapter penyimpanan sederhana (file-based/opsional)
 
 ---
 
-## ⭐ Support
-
-If you like this project:
-
-👉 Give a ⭐ on GitHub — it really helps!
+## Logging & Debugging
+- lib/logger.js menangani format dan level log.
+- Untuk debugging, jalankan dengan NODE_ENV=development dan periksa output terminal untuk QR code saat pertama kali koneksi.
 
 ---
 
-## 👨‍💻 Author
-
-**rtwone**  
-GitHub: https://github.com/rtwone
+## Deployment & Produksi
+- Jalankan di proses manager (pm2/systemd) untuk memastikan otomatis restart.
+- Pastikan session disimpan di lokasi yang persisten (bukan ephemeral container storage) jika ingin mempertahankan login.
+- Backup session/auth file secara aman.
 
 ---
 
-## 📝 License
+## Keamanan & Kebijakan penggunaan
+- Proyek ini menggunakan WhatsApp Web API via Baileys — tidak ada afiliasi resmi dengan WhatsApp/Meta.
+- Gunakan bot sesuai kebijakan WhatsApp dan hukum setempat. Hindari spam dan penggunaan otomatis yang melanggar ketentuan layanan.
 
-MIT License © rtwone
+---
+
+## Kontribusi
+1. Fork repo
+2. Buat branch fitur: git checkout -b feat/namafitur
+3. Tambah test / dokumentasi bila relevan
+4. Buka Pull Request dengan deskripsi perubahan
+
+Silakan buka issue untuk diskusi fitur atau bug sebelum implementasi besar.
+
+---
+
+## Lisensi
+MIT © rtwone
+
+---
+
+## Kontak
+Author: rtwone — https://github.com/rtwone
